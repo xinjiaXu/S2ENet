@@ -1,0 +1,27 @@
+# Python runtime cache
+__pycache__/
+*.py[cod]
+
+# Downloaded or trained model weights
+*.pth
+*.pt
+*.ckpt
+*.pyth
+*.safetensors
+
+# Training, evaluation, and prediction outputs
+work_dirs/
+*_work_dirs/
+checkpoint/
+checkpoints/
+runs/
+outputs/
+predictions/
+results_*/
+logs/
+
+# Runtime logs and temporary files
+*.log
+trainValLog.txt
+testLog.txt
+*.tmp
