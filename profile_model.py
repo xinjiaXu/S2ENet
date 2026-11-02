@@ -39,13 +39,16 @@ def main():
         flops = None
         flop_error = f"{type(exc).__name__}: {exc}"
 
+    parameters_total = sum(p.numel() for p in model.parameters())
     result = {
         "model": "S2ENet-MYNet_2",
         "input": "two RGB images, batch=1",
         "image_size": [args.height, args.width],
-        "parameters_total": sum(p.numel() for p in model.parameters()),
+        "parameters_total": parameters_total,
+        "params_m": parameters_total / 1_000_000,
         "parameters_trainable": sum(p.numel() for p in model.parameters() if p.requires_grad),
         "fvcore_flops_per_pair": flops,
+        "flops_g": flops / 1_000_000_000 if flops is not None else None,
         "fvcore_convention": "one multiply-add is counted as one FLOP",
         "unsupported_ops": unsupported,
         "fvcore_error": flop_error,

@@ -79,4 +79,4 @@ CUDA_VISIBLE_DEVICES=0 python profile_model.py --device cuda:0 \
   --output S2ENet_work_dirs/profile_256.json
 ```
 
-The script disables only pretrained-weight loading during profiling; architecture and tensor dimensions remain unchanged. It reports total/trainable parameters and fvcore operations. Unsupported wavelet operators are listed; FLOPs are partial if any are reported.
+The script disables only pretrained-weight loading during profiling; architecture and tensor dimensions remain unchanged. It reports `params_m` and `flops_g` for a common comparison table, alongside raw counts. Unsupported wavelet operators are listed; FLOPs are partial if any are reported.

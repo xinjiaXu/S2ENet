@@ -667,6 +667,7 @@ class FSR(nn.Module):
         self.in_channels = in_channels
         self.conv2d = nn.Conv2d(in_channels=self.in_channels, out_channels=1, kernel_size=7, stride=1, padding=3)
         self.conv2d1 = nn.Conv2d(in_channels=self.in_channels, out_channels=1, kernel_size=7, stride=1, padding=3)
+        self.sigmoid = nn.Sigmoid()
 
         self.extract21 = nn.Sequential(nn.Conv2d(in_channels, in_channels, (3, 3), padding=(1, 1),
                                                  stride=(1, 1), bias=False),
