@@ -11,9 +11,7 @@ import numpy as np
 from functools import partial
 from torchvision import models
 import matplotlib.pyplot as plt
-from mmengine.model import BaseModule
 from timm.models.layers import trunc_normal_
-from mmseg.utils import OptConfigType
 from torch import Tensor
 import cv2
 from scipy.interpolate import splprep, splev
@@ -21,7 +19,6 @@ from torchvision.transforms.functional import gaussian_blur
 from models.resnet_x import resnet18
 from models.resnet_x import resnet34
 from models.resnet_x import resnet50
-from mmcv.cnn import ConvModule
 
 
 
@@ -364,10 +361,10 @@ class NeighborFeatureAggregation6(nn.Module):
 
 
 
-class SCL(BaseModule):
+class SCL(nn.Module):
     def __init__(self,
-                 init_cfg: OptConfigType = None):
-        super().__init__(init_cfg)
+                 init_cfg=None):
+        super().__init__()
         self.sigmoid = nn.Sigmoid()
         self.softmax = nn.Softmax(2)
 

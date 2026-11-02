@@ -202,21 +202,11 @@ def trainValidateSegmentation(args):
 
     model = BaseNet()
 
-    args.savedir = args.savedir + '_' + args.file_root + '+mynet' + '/'
-    args.vis_dir = args.savedir + '/Vis/'
-
-    if args.file_root == 'LEVIR':
-        args.file_root = ' '   #your dataset path
-    elif args.file_root == 'WHU':
-        args.file_root = ' '
-    elif args.file_root == 'SYSU':
-        args.file_root = ' '
-    elif args.file_root == 'CDD':
-        args.file_root = ' '
-    elif args.file_root == 'CLCD':
-        args.file_root = ' '
-    else:
-        raise TypeError('%s has not defined' % args.file_root)
+    args.dataset_name = args.dataset_name or os.path.basename(os.path.normpath(args.dataset_root or args.file_root))
+    if args.dataset_root:
+        args.file_root = args.dataset_root
+    args.savedir = os.path.join(args.output_dir, args.dataset_name, 'train') + os.sep
+    args.vis_dir = os.path.join(args.savedir, 'Vis') + os.sep
 
     if not os.path.exists(args.savedir):
         os.makedirs(args.savedir)
@@ -252,7 +242,9 @@ def trainValidateSegmentation(args):
         myTransforms.ToTensor()
     ])
 
-    train_data = myDataLoader.Dataset("train", file_root=args.file_root, transform=trainDataset_main)
+    train_data = myDataLoader.Dataset("train", file_root=args.file_root, transform=trainDataset_main,
+                                     image_dir_a=args.image_dir_a, image_dir_b=args.image_dir_b,
+                                     label_dir=args.label_dir)
 
     trainLoader = torch.utils.data.DataLoader(
         train_data,
@@ -260,12 +252,16 @@ def trainValidateSegmentation(args):
         num_workers=args.num_workers, pin_memory=False, drop_last=True
     )
 
-    val_data = myDataLoader.Dataset("val", file_root=args.file_root, transform=valDataset)
+    val_data = myDataLoader.Dataset("val", file_root=args.file_root, transform=valDataset,
+                                   image_dir_a=args.image_dir_a, image_dir_b=args.image_dir_b,
+                                   label_dir=args.label_dir)
     valLoader = torch.utils.data.DataLoader(
         val_data, shuffle=False,
         batch_size=args.batch_size, num_workers=args.num_workers, pin_memory=False)
 
-    test_data = myDataLoader.Dataset("test", file_root=args.file_root, transform=valDataset)
+    test_data = myDataLoader.Dataset("test", file_root=args.file_root, transform=valDataset,
+                                    image_dir_a=args.image_dir_a, image_dir_b=args.image_dir_b,
+                                    label_dir=args.label_dir)
     testLoader = torch.utils.data.DataLoader(
         test_data, shuffle=False,
         batch_size=args.batch_size, num_workers=args.num_workers, pin_memory=False)
@@ -367,6 +363,12 @@ def trainValidateSegmentation(args):
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--file_root', default="CLCD", help='Data directory | LEVIR | WHU | SYSU ')
+    parser.add_argument('--dataset-root', type=str, default=None)
+    parser.add_argument('--dataset-name', type=str, default=None)
+    parser.add_argument('--output-dir', type=str, default='./S2ENet_work_dirs')
+    parser.add_argument('--image-dir-a', type=str, default='A')
+    parser.add_argument('--image-dir-b', type=str, default='B')
+    parser.add_argument('--label-dir', type=str, default='label')
     parser.add_argument('--inWidth', type=int, default=256, help='Width of RGB image')
     parser.add_argument('--inHeight', type=int, default=256, help='Height of RGB image')
     parser.add_argument('--max_steps', type=int, default=40000, help='Max. number of iterations')
